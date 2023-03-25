@@ -75,9 +75,11 @@ export default ({
 
               mutate({
                 variables: { amount: amount.current, userPassport },
-                onCompleted() {
-                  handleClose();
-                  refetch();
+                onCompleted({ WithdrawMoney: { result } }) {
+                  if (result) {
+                    handleClose();
+                    refetch();
+                  }
                 },
               });
             }}

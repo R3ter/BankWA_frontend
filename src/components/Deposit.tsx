@@ -8,8 +8,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { DocumentNode, useMutation } from "@apollo/client";
 import { CircularProgress } from "@mui/material";
-import { IResultMsgDeposit } from "../../API/Interfaces/IResultMsg";
-import PopMessage from "../PopMessage";
+import { IResultMsgDeposit } from "../API/Interfaces/IResultMsg";
+import PopMessage from "./PopMessage";
 
 export default ({
   message,
@@ -75,9 +75,11 @@ export default ({
 
               mutate({
                 variables: { amount: amount.current, userPassport },
-                onCompleted() {
-                  handleClose();
-                  refetch();
+                onCompleted({ Deposit: { result } }) {
+                  if (result) {
+                    handleClose();
+                    refetch();
+                  }
                 },
               });
             }}

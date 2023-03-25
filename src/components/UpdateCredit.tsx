@@ -74,9 +74,11 @@ export default ({
               setMessage(true);
               mutate({
                 variables: { amount: amount.current, userPassport },
-                onCompleted() {
-                  handleClose();
-                  refetch();
+                onCompleted({ editCredit: { result } }) {
+                  if (result) {
+                    handleClose();
+                    refetch();
+                  }
                 },
               });
             }}

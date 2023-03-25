@@ -12,7 +12,7 @@ import "./App.css";
 import { Button, CircularProgress, Switch, TextField } from "@mui/material";
 import { GET_ALL_USERS } from "./API/Query";
 import IUser from "./API/Interfaces/IUser";
-import Deposit from "./components/Deposit/Deposit";
+import Deposit from "./components/Deposit";
 import {
   ADDACCOUNT,
   DEPOSIT,
