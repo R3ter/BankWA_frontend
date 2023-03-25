@@ -26,7 +26,6 @@ export default ({
 }) => {
   const [open, setOpen] = React.useState(false);
   const [mutate, { loading, data }] = useMutation<IResultMsgWithdraw>(api);
-  const [popmessage, setMessage] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -65,8 +64,6 @@ export default ({
           <Button
             disabled={loading}
             onClick={() => {
-              setMessage(true);
-
               mutate({
                 variables: { amount: amount.current, userPassport },
                 onCompleted({ WithdrawMoney: { msg, result } }) {
@@ -74,6 +71,10 @@ export default ({
                     msg: msg || "",
                     error: !result,
                   });
+                  if (result) {
+                    handleClose();
+                    refetch();
+                  }
                 },
               });
             }}
