@@ -81,6 +81,7 @@ function App() {
                   ends: filter.current.maxCash,
                   onlyActive: filter.current.onlyActive,
                 });
+                setMtext({ msg: "", error: false });
               }}
             >
               Filter
@@ -101,6 +102,7 @@ function App() {
                   ends: 0,
                   onlyActive: filter.current.onlyActive,
                 });
+                setMtext({ msg: "", error: false });
               }}
             >
               clear
@@ -116,6 +118,7 @@ function App() {
                   ends: filter.current.maxCash,
                   onlyActive: e.target.checked,
                 });
+                setMtext({ msg: "", error: false });
               }}
             />
           </div>
