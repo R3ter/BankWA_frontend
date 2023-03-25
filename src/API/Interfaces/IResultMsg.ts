@@ -16,3 +16,16 @@ export interface IResultMsgEditAddAccount {
     error: boolean;
   };
 }
+export interface IResultMsgTransfer {
+  Transfer: {
+    msg: string;
+    result: boolean;
+  };
+}
+
+export interface IResultMsgWithdraw {
+  WithdrawMoney: {
+    msg: string;
+    result: boolean;
+  };
+}

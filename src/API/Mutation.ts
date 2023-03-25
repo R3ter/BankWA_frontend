@@ -34,3 +34,25 @@ export const ADDACCOUNT = gql`
     }
   }
 `;
+export const TRANSFER = gql`
+  mutation MyMutation($from: String!, $to: String!, $amount: Float!) {
+    Transfer(amount: $amount, from: $from, to: $to) {
+      msg
+      result
+    }
+  }
+`;
+
+export const WITHDRAW = gql`
+  mutation MyMutation($userPassport: String!, $amount: Float!) {
+    WithdrawMoney(amount: $amount, userPassport: $userPassport) {
+      result
+      msg
+    }
+  }
+`;
+export const SETACTIVE = gql`
+  mutation MyMutation($userPassport: String!, $active: Boolean!) {
+    setUserActive(active: $active, userPassport: $userPassport)
+  }
+`;

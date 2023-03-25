@@ -8,7 +8,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { DocumentNode, useMutation } from "@apollo/client";
 import { CircularProgress } from "@mui/material";
-import { IResultMsgEditCredit } from "../API/Interfaces/IResultMsg";
+import { IResultMsgWithdraw } from "../API/Interfaces/IResultMsg";
 import PopMessage from "./PopMessage";
 
 export default ({
@@ -23,8 +23,8 @@ export default ({
   refetch: () => {};
 }) => {
   const [open, setOpen] = React.useState(false);
+  const [mutate, { loading, data }] = useMutation<IResultMsgWithdraw>(api);
   const [popmessage, setMessage] = React.useState(false);
-  const [mutate, { loading, data }] = useMutation<IResultMsgEditCredit>(api);
 
   const handleClickOpen = () => {
     setMessage(false);
@@ -40,15 +40,15 @@ export default ({
       {popmessage && data && (
         <PopMessage
           open={!!data}
-          text={data?.editCredit.msg || ""}
-          type={data?.editCredit.result ? "success" : "error"}
+          text={data?.WithdrawMoney.msg || ""}
+          type={data?.WithdrawMoney.result ? "success" : "error"}
         />
       )}
       <Button onClick={handleClickOpen} variant="outlined" color="secondary">
         {message}
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Update Credit</DialogTitle>
+        <DialogTitle>Withdraw</DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
           <TextField
@@ -72,6 +72,7 @@ export default ({
             disabled={loading}
             onClick={() => {
               setMessage(true);
+
               mutate({
                 variables: { amount: amount.current, userPassport },
                 onCompleted() {

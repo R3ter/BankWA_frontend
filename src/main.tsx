@@ -5,7 +5,7 @@ import App from "./App";
 import "./index.css";
 
 const client = new ApolloClient({
-  uri: "https://bankbackend.onrender.com/graphql",
+  uri: "http://localhost:4000/graphql",
   cache: new InMemoryCache(),
 });
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

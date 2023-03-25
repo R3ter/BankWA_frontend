@@ -1,4 +1,3 @@
-import * as React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -10,13 +9,22 @@ import { useQuery } from "@apollo/client";
 
 import "./App.css";
 
-import { Button, CircularProgress } from "@mui/material";
+import { Button, CircularProgress, Switch } from "@mui/material";
 import { GET_ALL_USERS } from "./API/Query";
-import IUser from "./Interfaces/IUser";
+import IUser from "./API/Interfaces/IUser";
 import Deposit from "./components/Deposit/Deposit";
-import { ADDACCOUNT, DEPOSIT, UPDATECRIDET } from "./API/Mutation";
+import {
+  ADDACCOUNT,
+  DEPOSIT,
+  TRANSFER,
+  UPDATECRIDET,
+  WITHDRAW,
+} from "./API/Mutation";
 import UpdateCredit from "./components/UpdateCredit";
 import AddAccount from "./components/AddAccount";
+import Transfer from "./components/Transfer";
+import Withdraw from "./components/Withdraw";
+import ActiveSwitch from "./components/ActiveSwitch";
 function App() {
   const { loading, error, data, refetch } = useQuery<IUser>(GET_ALL_USERS);
 
@@ -58,7 +66,10 @@ function App() {
                   <TableCell align="center">{row.credit}</TableCell>
                   <TableCell align="center">{row.cash}</TableCell>
                   <TableCell align="center">{row.role}</TableCell>
-                  <TableCell align="center">{row.active + ""}</TableCell>
+                  <ActiveSwitch
+                    active={row.active}
+                    passportNumber={"" + row.passportNumber}
+                  />
 
                   <TableCell align="center">
                     <Deposit
@@ -77,14 +88,20 @@ function App() {
                     />
                   </TableCell>
                   <TableCell align="center">
-                    <Button variant="outlined" color="secondary">
-                      Transfer
-                    </Button>
+                    <Transfer
+                      message="Transfer Money"
+                      userPassport={row.passportNumber + ""}
+                      api={TRANSFER}
+                      refetch={refetch}
+                    />
                   </TableCell>
                   <TableCell align="center">
-                    <Button variant="outlined" color="secondary">
-                      withdraw
-                    </Button>
+                    <Withdraw
+                      message="Withdraw"
+                      userPassport={row.passportNumber + ""}
+                      api={WITHDRAW}
+                      refetch={refetch}
+                    />
                   </TableCell>
                 </TableRow>
               ))}

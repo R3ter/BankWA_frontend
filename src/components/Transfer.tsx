@@ -9,22 +9,31 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { DocumentNode, gql, useMutation } from "@apollo/client";
 import { Alert, CircularProgress, Snackbar } from "@mui/material";
 import {
-  IResultMsgEditAddAccount,
   IResultMsgEditCredit,
+  IResultMsgTransfer,
 } from "../API/Interfaces/IResultMsg";
 import PopMessage from "./PopMessage";
 
-export default ({ api, refetch }: { api: DocumentNode; refetch: () => {} }) => {
+export default ({
+  message,
+  userPassport,
+  api,
+  refetch,
+}: {
+  message: string;
+  userPassport: string;
+  api: DocumentNode;
+  refetch: () => {};
+}) => {
   const [open, setOpen] = React.useState(false);
   const [popmessage, setMessage] = React.useState(false);
-  const [mutate, { loading, data }] =
-    useMutation<IResultMsgEditAddAccount>(api);
+  const [mutate, { loading, data }] = useMutation<IResultMsgTransfer>(api);
 
   const handleClickOpen = () => {
     setMessage(false);
     setOpen(true);
   };
-  const amount = React.useRef({ passportNumber: "", name: "", password: "" });
+  const amount = React.useRef({ amount: 0, to: "" });
   const handleClose = () => {
     setOpen(false);
   };
@@ -34,51 +43,39 @@ export default ({ api, refetch }: { api: DocumentNode; refetch: () => {} }) => {
       {popmessage && data && (
         <PopMessage
           open={!!data}
-          text={data?.addAccount.msg || "new user was added!"}
-          type={!data?.addAccount.error ? "success" : "error"}
+          text={data?.Transfer.msg || ""}
+          type={data?.Transfer.result ? "success" : "error"}
         />
       )}
-      <Button
-        onClick={handleClickOpen}
-        sx={{ float: "right" }}
-        variant="contained"
-        color="success"
-      >
-        + create account
+      <Button onClick={handleClickOpen} variant="outlined" color="secondary">
+        {message}
       </Button>
-
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Update Credit</DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
           <TextField
             onChange={(e) => {
-              amount.current.passportNumber = e.target.value;
+              amount.current.to = e.target.value;
             }}
             autoFocus
             margin="dense"
-            label="Passport ID"
+            id="name"
+            label="Transfer To (passport number)"
             fullWidth
             variant="standard"
           />
           <TextField
             onChange={(e) => {
-              amount.current.name = e.target.value;
+              amount.current.amount = +e.target.value;
             }}
+            autoFocus
             margin="dense"
-            label="name"
+            id="name"
+            label="Amount"
             fullWidth
             variant="standard"
-          />
-          <TextField
-            onChange={(e) => {
-              amount.current.password = e.target.value;
-            }}
-            margin="dense"
-            label="password"
-            fullWidth
-            variant="standard"
-            type={"password"}
+            type={"number"}
           />
         </DialogContent>
         <DialogActions>
@@ -90,9 +87,13 @@ export default ({ api, refetch }: { api: DocumentNode; refetch: () => {} }) => {
             onClick={() => {
               setMessage(true);
               mutate({
-                variables: { ...amount.current },
-                onCompleted(data) {
-                  if (!data.addAccount.error) {
+                variables: {
+                  amount: amount.current.amount,
+                  from: userPassport,
+                  to: amount.current.to,
+                },
+                onCompleted({ Transfer: { result } }) {
+                  if (result) {
                     handleClose();
                     refetch();
                   }
