@@ -9,7 +9,13 @@ import { useQuery } from "@apollo/client";
 
 import "./App.css";
 
-import { Button, CircularProgress, Switch, TextField } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  CircularProgress,
+  Switch,
+  TextField,
+} from "@mui/material";
 import { GET_ALL_USERS } from "./API/Query";
 import IUser from "./API/Interfaces/IUser";
 import Deposit from "./components/Deposit";
@@ -28,7 +34,12 @@ import ActiveSwitch from "./components/ActiveSwitch";
 import { RefObject, useRef, useState } from "react";
 import PopMessage from "./components/PopMessage";
 function App() {
-  const filter = useRef({ maxCash: 0, minCash: 0, onlyActive: false });
+  const filter = useRef({
+    maxCash: 0,
+    minCash: 0,
+    onlyActive: false,
+    sort: "cash",
+  });
   const [mtext, setMtext] = useState({ msg: "", error: false });
   const textFilter = useRef<{
     min: RefObject<any> | null;
@@ -39,6 +50,7 @@ function App() {
     variables: {
       starts: filter.current.minCash,
       ends: filter.current.maxCash,
+      sortBy: "cash",
     },
   });
   return (
