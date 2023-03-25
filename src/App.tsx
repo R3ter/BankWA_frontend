@@ -25,9 +25,11 @@ import AddAccount from "./components/AddAccount";
 import Transfer from "./components/Transfer";
 import Withdraw from "./components/Withdraw";
 import ActiveSwitch from "./components/ActiveSwitch";
-import { RefObject, useRef } from "react";
+import { RefObject, useRef, useState } from "react";
+import PopMessage from "./components/PopMessage";
 function App() {
   const filter = useRef({ maxCash: 0, minCash: 0, onlyActive: false });
+  const [mtext, setMtext] = useState({ msg: "", error: false });
   const textFilter = useRef<{
     min: RefObject<any> | null;
     max: RefObject<any> | null;
@@ -41,6 +43,7 @@ function App() {
   });
   return (
     <div className="App">
+      <PopMessage text={mtext.msg} type={mtext.error ? "error" : "success"} />
       <AddAccount api={ADDACCOUNT} refetch={refetch} />
       <TableContainer component={Paper}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -160,6 +163,9 @@ function App() {
                     <Deposit
                       api={DEPOSIT}
                       message="Deposit"
+                      setMtext={({ msg, error }) =>
+                        setMtext({ ...{ msg, error } })
+                      }
                       refetch={refetch}
                       userPassport={row.passportNumber + ""}
                     />
@@ -169,6 +175,9 @@ function App() {
                       api={UPDATECRIDET}
                       message="Update Credit"
                       refetch={refetch}
+                      setMtext={({ msg, error }) =>
+                        setMtext({ ...{ msg, error } })
+                      }
                       userPassport={row.passportNumber + ""}
                     />
                   </TableCell>
@@ -177,11 +186,17 @@ function App() {
                       message="Transfer Money"
                       userPassport={row.passportNumber + ""}
                       api={TRANSFER}
+                      setMtext={({ msg, error }) =>
+                        setMtext({ ...{ msg, error } })
+                      }
                       refetch={refetch}
                     />
                   </TableCell>
                   <TableCell align="center">
                     <Withdraw
+                      setMtext={({ msg, error }) =>
+                        setMtext({ ...{ msg, error } })
+                      }
                       message="Withdraw"
                       userPassport={row.passportNumber + ""}
                       api={WITHDRAW}

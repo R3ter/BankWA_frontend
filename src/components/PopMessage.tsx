@@ -4,19 +4,18 @@ import React, { useEffect, useRef, useState } from "react";
 
 interface IProps {
   text: string;
-  open: boolean;
   type?: "success" | "error";
 }
-export default (props: IProps) => {
-  const [state, setState] = useState(props.open);
+export default ({ text, type }: IProps) => {
+  const [state, setState] = useState({ text, open: !!text, type });
 
   useEffect(() => {
-    setState(props.open);
+    setState({ text, open: !!text, type });
     const timer = setTimeout(() => {
-      setState(false);
+      setState({ text: "", open: false, type });
     }, 5000);
     return () => clearTimeout(timer);
-  }, [props]);
+  }, [text]);
 
   const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -27,9 +26,9 @@ export default (props: IProps) => {
   return (
     <Snackbar
       anchorOrigin={{ horizontal: "right", vertical: "top" }}
-      open={state}
+      open={state.open}
     >
-      <Alert severity={props.type || "error"}>{props.text}</Alert>
+      <Alert severity={state.type || "error"}>{state.text}</Alert>
     </Snackbar>
   );
 };

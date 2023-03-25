@@ -12,25 +12,24 @@ import {
   IResultMsgEditCredit,
   IResultMsgTransfer,
 } from "../API/Interfaces/IResultMsg";
-import PopMessage from "./PopMessage";
 
 export default ({
   message,
   userPassport,
   api,
+  setMtext,
   refetch,
 }: {
   message: string;
   userPassport: string;
+  setMtext: ({ msg, error }: { msg: string; error: boolean }) => void;
   api: DocumentNode;
   refetch: () => {};
 }) => {
   const [open, setOpen] = React.useState(false);
-  const [popmessage, setMessage] = React.useState(false);
   const [mutate, { loading, data }] = useMutation<IResultMsgTransfer>(api);
 
   const handleClickOpen = () => {
-    setMessage(false);
     setOpen(true);
   };
   const amount = React.useRef({ amount: 0, to: "" });
@@ -40,13 +39,6 @@ export default ({
 
   return (
     <div>
-      {popmessage && data && (
-        <PopMessage
-          open={!!data}
-          text={data?.Transfer.msg || ""}
-          type={data?.Transfer.result ? "success" : "error"}
-        />
-      )}
       <Button onClick={handleClickOpen} variant="outlined" color="secondary">
         {message}
       </Button>
@@ -85,14 +77,17 @@ export default ({
           <Button
             disabled={loading}
             onClick={() => {
-              setMessage(true);
               mutate({
                 variables: {
                   amount: amount.current.amount,
                   from: userPassport,
                   to: amount.current.to,
                 },
-                onCompleted({ Transfer: { result } }) {
+                onCompleted({ Transfer: { result, msg } }) {
+                  setMtext({
+                    msg: msg || "",
+                    error: !result,
+                  });
                   if (result) {
                     handleClose();
                     refetch();

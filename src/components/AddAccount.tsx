@@ -12,7 +12,6 @@ import {
   IResultMsgEditAddAccount,
   IResultMsgEditCredit,
 } from "../API/Interfaces/IResultMsg";
-import PopMessage from "./PopMessage";
 
 export default ({ api, refetch }: { api: DocumentNode; refetch: () => {} }) => {
   const [open, setOpen] = React.useState(false);
@@ -31,13 +30,7 @@ export default ({ api, refetch }: { api: DocumentNode; refetch: () => {} }) => {
 
   return (
     <div>
-      {popmessage && data && (
-        <PopMessage
-          open={!!data}
-          text={data?.addAccount.msg || "new user was added!"}
-          type={!data?.addAccount.error ? "success" : "error"}
-        />
-      )}
+
       <Button
         onClick={handleClickOpen}
         sx={{ float: "right" }}

@@ -9,25 +9,24 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { DocumentNode, useMutation } from "@apollo/client";
 import { CircularProgress } from "@mui/material";
 import { IResultMsgDeposit } from "../API/Interfaces/IResultMsg";
-import PopMessage from "./PopMessage";
 
 export default ({
   message,
   userPassport,
   api,
+  setMtext,
   refetch,
 }: {
   message: string;
   userPassport: string;
+  setMtext: ({ msg, error }: { msg: string; error: boolean }) => void;
   api: DocumentNode;
   refetch: () => {};
 }) => {
   const [open, setOpen] = React.useState(false);
   const [mutate, { loading, data }] = useMutation<IResultMsgDeposit>(api);
-  const [popmessage, setMessage] = React.useState(false);
 
   const handleClickOpen = () => {
-    setMessage(false);
     setOpen(true);
   };
   const amount = React.useRef(0);
@@ -37,13 +36,6 @@ export default ({
 
   return (
     <div>
-      {popmessage && data && (
-        <PopMessage
-          open={!!data}
-          text={data?.Deposit.msg || ""}
-          type={data?.Deposit.result ? "success" : "error"}
-        />
-      )}
       <Button onClick={handleClickOpen} variant="outlined" color="secondary">
         {message}
       </Button>
@@ -71,11 +63,13 @@ export default ({
           <Button
             disabled={loading}
             onClick={() => {
-              setMessage(true);
-
               mutate({
                 variables: { amount: amount.current, userPassport },
-                onCompleted({ Deposit: { result } }) {
+                onCompleted({ Deposit: { result, msg } }) {
+                  setMtext({
+                    msg: msg || "",
+                    error: !result,
+                  });
                   if (result) {
                     handleClose();
                     refetch();

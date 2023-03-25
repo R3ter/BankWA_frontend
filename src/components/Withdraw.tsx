@@ -9,17 +9,19 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { DocumentNode, useMutation } from "@apollo/client";
 import { CircularProgress } from "@mui/material";
 import { IResultMsgWithdraw } from "../API/Interfaces/IResultMsg";
-import PopMessage from "./PopMessage";
 
 export default ({
   message,
   userPassport,
   api,
   refetch,
+  setMtext,
 }: {
   message: string;
   userPassport: string;
   api: DocumentNode;
+  setMtext: ({ msg, error }: { msg: string; error: boolean }) => void;
+
   refetch: () => {};
 }) => {
   const [open, setOpen] = React.useState(false);
@@ -27,7 +29,6 @@ export default ({
   const [popmessage, setMessage] = React.useState(false);
 
   const handleClickOpen = () => {
-    setMessage(false);
     setOpen(true);
   };
   const amount = React.useRef(0);
@@ -37,13 +38,6 @@ export default ({
 
   return (
     <div>
-      {popmessage && data && (
-        <PopMessage
-          open={!!data}
-          text={data?.WithdrawMoney.msg || ""}
-          type={data?.WithdrawMoney.result ? "success" : "error"}
-        />
-      )}
       <Button onClick={handleClickOpen} variant="outlined" color="secondary">
         {message}
       </Button>
@@ -75,11 +69,11 @@ export default ({
 
               mutate({
                 variables: { amount: amount.current, userPassport },
-                onCompleted({ WithdrawMoney: { result } }) {
-                  if (result) {
-                    handleClose();
-                    refetch();
-                  }
+                onCompleted({ WithdrawMoney: { msg, result } }) {
+                  setMtext({
+                    msg: msg || "",
+                    error: !result,
+                  });
                 },
               });
             }}
