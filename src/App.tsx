@@ -33,6 +33,7 @@ function App() {
     max: RefObject<any> | null;
   }>({ max: useRef(null), min: useRef(null) });
   const { loading, error, data, refetch } = useQuery<IUser>(GET_ALL_USERS, {
+    notifyOnNetworkStatusChange: true,
     variables: {
       starts: filter.current.minCash,
       ends: filter.current.maxCash,
@@ -103,7 +104,7 @@ function App() {
             </Button>
           </div>
           <div>
-            <label>Only active?</label>{" "}
+            <label>Only active?</label>
             <Switch
               onChange={(e) => {
                 filter.current.onlyActive = e.target.checked;
