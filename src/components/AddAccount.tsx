@@ -8,19 +8,22 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { DocumentNode, gql, useMutation } from "@apollo/client";
 import { Alert, CircularProgress, Snackbar } from "@mui/material";
-import {
-  IResultMsgEditAddAccount,
-  IResultMsgEditCredit,
-} from "../API/Interfaces/IResultMsg";
+import { IResultMsgEditAddAccount } from "../API/Interfaces/IResultMsg";
 
-export default ({ api, refetch }: { api: DocumentNode; refetch: () => {} }) => {
+export default ({
+  api,
+  refetch,
+  setMtext,
+}: {
+  api: DocumentNode;
+  refetch: () => {};
+  setMtext: Function;
+}) => {
   const [open, setOpen] = React.useState(false);
-  const [popmessage, setMessage] = React.useState(false);
   const [mutate, { loading, data }] =
     useMutation<IResultMsgEditAddAccount>(api);
 
   const handleClickOpen = () => {
-    setMessage(false);
     setOpen(true);
   };
   const amount = React.useRef({ passportNumber: "", name: "", password: "" });
@@ -30,7 +33,6 @@ export default ({ api, refetch }: { api: DocumentNode; refetch: () => {} }) => {
 
   return (
     <div>
-
       <Button
         onClick={handleClickOpen}
         sx={{ float: "right" }}
@@ -81,11 +83,14 @@ export default ({ api, refetch }: { api: DocumentNode; refetch: () => {} }) => {
           <Button
             disabled={loading}
             onClick={() => {
-              setMessage(true);
               mutate({
                 variables: { ...amount.current },
-                onCompleted(data) {
-                  if (!data.addAccount.error) {
+                onCompleted({ addAccount: { error, msg } }) {
+                  setMtext({
+                    msg: msg || "",
+                    error: error,
+                  });
+                  if (!error) {
                     handleClose();
                     refetch();
                   }
