@@ -26,7 +26,11 @@ export default ({
   const handleClickOpen = () => {
     setOpen(true);
   };
-  const amount = React.useRef({ passportNumber: "", name: "", password: "" });
+  const amount = React.useRef<any>({
+    passportNumber: "",
+    name: "",
+    password: "",
+  });
   const handleClose = () => {
     setOpen(false);
   };
@@ -46,35 +50,20 @@ export default ({
         <DialogTitle>Update Credit</DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
-          <TextField
-            onChange={(e) => {
-              amount.current.passportNumber = e.target.value;
-            }}
-            autoFocus
-            margin="dense"
-            label="Passport ID"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            onChange={(e) => {
-              amount.current.name = e.target.value;
-            }}
-            margin="dense"
-            label="name"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            onChange={(e) => {
-              amount.current.password = e.target.value;
-            }}
-            margin="dense"
-            label="password"
-            fullWidth
-            variant="standard"
-            type={"password"}
-          />
+          {["passportNumber", "name", "password"].map((v) => {
+            return (
+              <TextField
+                onChange={(e) => {
+                  amount.current[v] = e.target.value;
+                }}
+                autoFocus
+                margin="dense"
+                label={v}
+                fullWidth
+                variant="standard"
+              />
+            );
+          })}
         </DialogContent>
         <DialogActions>
           <Button disabled={loading} onClick={handleClose}>
