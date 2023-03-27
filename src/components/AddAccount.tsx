@@ -16,7 +16,7 @@ export default ({
   setMtext,
 }: {
   api: DocumentNode;
-  refetch: () => {};
+  refetch: () => void;
   setMtext: Function;
 }) => {
   const [open, setOpen] = React.useState(false);

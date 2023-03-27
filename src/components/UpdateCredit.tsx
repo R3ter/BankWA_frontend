@@ -21,7 +21,7 @@ export default ({
   userPassport: string;
   setMtext: ({ msg, error }: { msg: string; error: boolean }) => void;
   api: DocumentNode;
-  refetch: () => {};
+  refetch: () => void;
 }) => {
   const [open, setOpen] = React.useState(false);
 

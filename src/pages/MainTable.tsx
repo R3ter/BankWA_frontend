@@ -16,6 +16,7 @@ import { useRef, useState } from "react";
 import PopMessage from "../components/PopMessage";
 import Filter from "../components/Filter";
 import CustomTableRow from "../components/CustomTableRow";
+import Sort from "../components/Sort";
 export default () => {
   const filter = useRef({
     maxCash: 0,
@@ -25,14 +26,28 @@ export default () => {
   });
   const [mtext, setMtext] = useState({ msg: "", error: false });
 
-  const { loading, data, refetch } = useQuery<IUser>(GET_ALL_USERS, {
+  const {
+    loading,
+    data,
+    refetch: refresh,
+  } = useQuery<IUser>(GET_ALL_USERS, {
     notifyOnNetworkStatusChange: true,
     variables: {
       starts: filter.current.minCash,
       ends: filter.current.maxCash,
-      sortBy: "cash",
+      onlyActive: filter.current.onlyActive,
+
+      sortBy: filter.current.sort,
     },
   });
+  const refetch = async () => {
+    await refresh({
+      starts: filter.current.minCash,
+      ends: filter.current.maxCash,
+      sortBy: filter.current.sort,
+      onlyActive: filter.current.onlyActive,
+    });
+  };
   return (
     <>
       <PopMessage text={mtext.msg} type={mtext.error ? "error" : "success"} />
@@ -40,17 +55,13 @@ export default () => {
       <TableContainer component={Paper}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Filter filter={filter} refetch={refetch} setMtext={setMtext} />
+          <Sort refetch={refetch} sort={filter} />
           <div>
             <label>Only active?</label>
             <Switch
               onChange={(e) => {
                 filter.current.onlyActive = e.target.checked;
-                refetch({
-                  starts: filter.current.minCash,
-                  ends: filter.current.maxCash,
-                  onlyActive: e.target.checked,
-                });
-                setMtext({ msg: "", error: false });
+                refetch();
               }}
             />
           </div>

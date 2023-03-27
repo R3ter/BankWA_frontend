@@ -22,7 +22,7 @@ export default ({
   api: DocumentNode;
   setMtext: ({ msg, error }: { msg: string; error: boolean }) => void;
 
-  refetch: () => {};
+  refetch: () => void;
 }) => {
   const [open, setOpen] = React.useState(false);
   const [mutate, { loading, data }] = useMutation<IResultMsgWithdraw>(api);

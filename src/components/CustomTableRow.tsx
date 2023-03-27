@@ -12,7 +12,7 @@ export default ({
   row,
 }: {
   setMtext: Function;
-  refetch: () => {};
+  refetch: () => void;
   row: {
     passportNumber: number;
     name: string;
